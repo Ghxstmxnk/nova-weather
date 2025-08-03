@@ -9,6 +9,7 @@ import { useWeather, getWeatherBackgroundClass } from '@/hooks/useWeather';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import stormyBg from '@/assets/stormy-bg.jpg';
 import sunnyBg from '@/assets/sunny-bg.jpg';
 import cloudyBg from '@/assets/cloudy-bg.jpg';
@@ -68,15 +69,18 @@ export const Dashboard = () => {
       </div>
 
       {/* Sidebar */}
-      <div className="relative z-10">
-        <WeatherSidebar 
-          isCollapsed={sidebarCollapsed} 
-          onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
-        />
-      </div>
+      <WeatherSidebar 
+        isCollapsed={sidebarCollapsed} 
+        onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
+      />
 
       {/* Main Content */}
-      <div className="flex-1 relative z-10">
+      <div 
+        className={cn(
+          "flex-1 relative z-10 transition-all duration-300",
+          sidebarCollapsed ? "ml-16" : "ml-64"
+        )}
+      >
         {/* Header */}
         <header className="p-6 border-b border-glass-border bg-glass-bg backdrop-blur-sm">
           <div className="flex items-center justify-between">

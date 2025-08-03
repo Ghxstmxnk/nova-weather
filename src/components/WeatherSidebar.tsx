@@ -1,5 +1,6 @@
 import { Cloud, Home, MapPin, Settings, TrendingUp, Wind, Droplets, Eye, Thermometer } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface WeatherSidebarProps {
   isCollapsed: boolean;
@@ -7,22 +8,29 @@ interface WeatherSidebarProps {
 }
 
 const navItems = [
-  { icon: Home, label: 'Dashboard', active: true },
-  { icon: MapPin, label: 'Locations', active: false },
-  { icon: TrendingUp, label: 'Forecast', active: false },
-  { icon: Cloud, label: 'Weather Map', active: false },
-  { icon: Wind, label: 'Wind Patterns', active: false },
-  { icon: Droplets, label: 'Precipitation', active: false },
-  { icon: Eye, label: 'Visibility', active: false },
-  { icon: Thermometer, label: 'Temperature', active: false },
-  { icon: Settings, label: 'Settings', active: false },
+  { icon: Home, label: 'Dashboard', path: '/' },
+  { icon: MapPin, label: 'Locations', path: '/locations' },
+  { icon: TrendingUp, label: 'Forecast', path: '/forecast' },
+  { icon: Cloud, label: 'Weather Map', path: '/weather-map' },
+  { icon: Wind, label: 'Wind Patterns', path: '/wind-patterns' },
+  { icon: Droplets, label: 'Precipitation', path: '/precipitation' },
+  { icon: Eye, label: 'Visibility', path: '/visibility' },
+  { icon: Thermometer, label: 'Temperature', path: '/temperature' },
+  { icon: Settings, label: 'Settings', path: '/settings' },
 ];
 
 export const WeatherSidebar = ({ isCollapsed, onToggle }: WeatherSidebarProps) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+  };
+
   return (
     <div
       className={cn(
-        'h-screen bg-glass-bg backdrop-blur-sm border-r border-glass-border transition-all duration-300 flex flex-col',
+        'fixed left-0 top-0 h-screen bg-glass-bg backdrop-blur-sm border-r border-glass-border transition-all duration-300 flex flex-col z-50',
         isCollapsed ? 'w-16' : 'w-64'
       )}
     >
@@ -44,22 +52,26 @@ export const WeatherSidebar = ({ isCollapsed, onToggle }: WeatherSidebarProps) =
       {/* Navigation */}
       <nav className="flex-1 p-4">
         <div className="space-y-2">
-          {navItems.map((item, index) => (
-            <button
-              key={index}
-              className={cn(
-                'w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200',
-                item.active
-                  ? 'bg-primary text-primary-foreground shadow-glow'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
-              )}
-            >
-              <item.icon className="w-5 h-5 flex-shrink-0" />
-              {!isCollapsed && (
-                <span className="font-medium">{item.label}</span>
-              )}
-            </button>
-          ))}
+          {navItems.map((item, index) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <button
+                key={index}
+                onClick={() => handleNavigation(item.path)}
+                className={cn(
+                  'w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200',
+                  isActive
+                    ? 'bg-primary text-primary-foreground shadow-glow'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                )}
+              >
+                <item.icon className="w-5 h-5 flex-shrink-0" />
+                {!isCollapsed && (
+                  <span className="font-medium">{item.label}</span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </nav>
 
