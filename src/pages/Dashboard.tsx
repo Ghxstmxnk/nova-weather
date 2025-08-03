@@ -5,14 +5,13 @@ import { WeatherCard } from '@/components/WeatherCard';
 import { WeatherChart } from '@/components/WeatherChart';
 import { ForecastCards } from '@/components/ForecastCards';
 import { LocationCards } from '@/components/LocationCards';
+import { WeatherDetails } from '@/components/WeatherDetails';
+import { Footer } from '@/components/Footer';
 import { useWeather, getWeatherBackgroundClass } from '@/hooks/useWeather';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import stormyBg from '@/assets/stormy-bg.jpg';
-import sunnyBg from '@/assets/sunny-bg.jpg';
-import cloudyBg from '@/assets/cloudy-bg.jpg';
 
 export const Dashboard = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -22,24 +21,34 @@ export const Dashboard = () => {
     fetchWeather(location);
   };
 
+  const handleSectionClick = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
+
   const getBackgroundImage = (condition?: string) => {
-    if (!condition) return stormyBg;
+    if (!condition) return 'https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg';
     
     const conditionLower = condition.toLowerCase();
     
     if (conditionLower.includes('storm') || conditionLower.includes('thunder')) {
-      return stormyBg;
+      return 'https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg';
     } else if (conditionLower.includes('rain') || conditionLower.includes('drizzle')) {
-      return cloudyBg;
+      return 'https://images.pexels.com/photos/531756/pexels-photo-531756.jpeg';
     } else if (conditionLower.includes('snow') || conditionLower.includes('blizzard')) {
-      return cloudyBg;
+      return 'https://images.pexels.com/photos/1571442/pexels-photo-1571442.jpeg';
     } else if (conditionLower.includes('clear') || conditionLower.includes('sunny')) {
-      return sunnyBg;
+      return 'https://images.pexels.com/photos/281260/pexels-photo-281260.jpeg';
     } else if (conditionLower.includes('cloud') || conditionLower.includes('overcast')) {
-      return cloudyBg;
+      return 'https://images.pexels.com/photos/531756/pexels-photo-531756.jpeg';
     }
     
-    return stormyBg;
+    return 'https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg';
   };
 
   if (error) {
@@ -71,7 +80,8 @@ export const Dashboard = () => {
       {/* Sidebar */}
       <WeatherSidebar 
         isCollapsed={sidebarCollapsed} 
-        onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
+        onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+        onSectionClick={handleSectionClick}
       />
 
       {/* Main Content */}
@@ -94,7 +104,7 @@ export const Dashboard = () => {
                 <Menu className="w-5 h-5" />
               </Button>
               <div>
-                <h1 className="text-2xl font-bold text-foreground">Weather Dashboard</h1>
+                <h1 className="text-2xl font-bold text-foreground">Atmoscope</h1>
                 <p className="text-muted-foreground">
                   {weather ? new Date(weather.location.localtime).toLocaleDateString('en-US', {
                     weekday: 'long',
@@ -121,14 +131,25 @@ export const Dashboard = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
               {/* Left Column - Main Weather */}
               <div className="lg:col-span-2 space-y-6">
-                <WeatherCard weather={weather} />
-                <WeatherChart weather={weather} />
-                <ForecastCards weather={weather} />
+                <div id="current-weather">
+                  <WeatherCard weather={weather} />
+                </div>
+                
+                <div id="hourly-chart">
+                  <WeatherChart weather={weather} />
+                </div>
+                
+                <div id="forecast">
+                  <ForecastCards weather={weather} />
+                </div>
+                
+                {/* Weather Details Sections */}
+                <WeatherDetails weather={weather} />
               </div>
 
               {/* Right Column - Location Cards */}
               <div className="space-y-6">
-                <div>
+                <div id="saved-locations">
                   <h3 className="text-lg font-semibold text-foreground mb-4">Saved Locations</h3>
                   <LocationCards 
                     currentWeather={weather}
@@ -139,6 +160,9 @@ export const Dashboard = () => {
             </div>
           ) : null}
         </main>
+        
+        {/* Footer */}
+        <Footer />
       </div>
     </div>
   );

@@ -1,30 +1,29 @@
-import { Cloud, Home, MapPin, Settings, TrendingUp, Wind, Droplets, Eye, Thermometer } from 'lucide-react';
+import { Cloud, Home, MapPin, Settings, TrendingUp, Wind, Droplets, Eye, Thermometer, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 interface WeatherSidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
+  onSectionClick: (sectionId: string) => void;
 }
 
 const navItems = [
-  { icon: Home, label: 'Dashboard', path: '/' },
-  { icon: MapPin, label: 'Locations', path: '/locations' },
-  { icon: TrendingUp, label: 'Forecast', path: '/forecast' },
-  { icon: Cloud, label: 'Weather Map', path: '/weather-map' },
-  { icon: Wind, label: 'Wind Patterns', path: '/wind-patterns' },
-  { icon: Droplets, label: 'Precipitation', path: '/precipitation' },
-  { icon: Eye, label: 'Visibility', path: '/visibility' },
-  { icon: Thermometer, label: 'Temperature', path: '/temperature' },
-  { icon: Settings, label: 'Settings', path: '/settings' },
+  { icon: Home, label: 'Current Weather', sectionId: 'current-weather' },
+  { icon: TrendingUp, label: '24-Hour Chart', sectionId: 'hourly-chart' },
+  { icon: Calendar, label: '5-Day Forecast', sectionId: 'forecast' },
+  { icon: Wind, label: 'Wind Details', sectionId: 'wind-details' },
+  { icon: Droplets, label: 'Humidity & Rain', sectionId: 'humidity-details' },
+  { icon: Eye, label: 'Visibility', sectionId: 'visibility-details' },
+  { icon: Thermometer, label: 'Temperature', sectionId: 'temperature-details' },
+  { icon: MapPin, label: 'Saved Locations', sectionId: 'saved-locations' },
 ];
 
-export const WeatherSidebar = ({ isCollapsed, onToggle }: WeatherSidebarProps) => {
-  const navigate = useNavigate();
+export const WeatherSidebar = ({ isCollapsed, onToggle, onSectionClick }: WeatherSidebarProps) => {
   const location = useLocation();
 
-  const handleNavigation = (path: string) => {
-    navigate(path);
+  const handleSectionClick = (sectionId: string) => {
+    onSectionClick(sectionId);
   };
 
   return (
@@ -42,7 +41,7 @@ export const WeatherSidebar = ({ isCollapsed, onToggle }: WeatherSidebarProps) =
           </div>
           {!isCollapsed && (
             <div className="flex flex-col">
-              <span className="text-foreground font-semibold text-lg">WeatherDash</span>
+              <span className="text-foreground font-semibold text-lg">Atmoscope</span>
               <span className="text-muted-foreground text-xs">Professional Weather</span>
             </div>
           )}
@@ -53,11 +52,11 @@ export const WeatherSidebar = ({ isCollapsed, onToggle }: WeatherSidebarProps) =
       <nav className="flex-1 p-4">
         <div className="space-y-2">
           {navItems.map((item, index) => {
-            const isActive = location.pathname === item.path;
+            const isActive = false; // We'll handle active state differently for sections
             return (
               <button
                 key={index}
-                onClick={() => handleNavigation(item.path)}
+                onClick={() => handleSectionClick(item.sectionId)}
                 className={cn(
                   'w-full flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200',
                   isActive
@@ -84,7 +83,7 @@ export const WeatherSidebar = ({ isCollapsed, onToggle }: WeatherSidebarProps) =
           {!isCollapsed && (
             <div className="flex flex-col">
               <span className="text-foreground font-medium text-sm">John Doe</span>
-              <span className="text-muted-foreground text-xs">Premium User</span>
+              <span className="text-muted-foreground text-xs">Weather Enthusiast</span>
             </div>
           )}
         </div>

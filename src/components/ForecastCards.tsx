@@ -17,7 +17,7 @@ export const ForecastCards = ({ weather }: ForecastCardsProps) => {
     <div className="bg-gradient-card backdrop-blur-sm border border-glass-border rounded-2xl p-6 shadow-card">
       <div className="flex items-center gap-3 mb-6">
         <Calendar className="w-6 h-6 text-primary" />
-        <h3 className="text-xl font-semibold text-foreground">5-Day Forecast</h3>
+        <h3 className="text-xl font-semibold text-foreground">5-Day Weather Forecast</h3>
       </div>
 
       <div className="space-y-4">
