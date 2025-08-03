@@ -84,7 +84,7 @@ export const SearchBar = ({ onLocationSelect, onSearch }: SearchBarProps) => {
             placeholder="Search for a city or location..."
             value={query}
             onChange={handleInputChange}
-            className="pl-10 pr-4 py-3 bg-glass-bg backdrop-blur-sm border-glass-border focus:ring-primary focus:border-primary rounded-xl text-foreground placeholder-muted-foreground"
+            className="pl-10 pr-4 py-3 bg-glass-bg backdrop-blur-sm border-glass-border focus:ring-primary focus:border-primary rounded-xl text-black placeholder-muted-foreground"
           />
           {loading && (
             <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
