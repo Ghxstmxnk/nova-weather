@@ -1,6 +1,6 @@
 import { Cloud, Home, MapPin, Settings, TrendingUp, Wind, Droplets, Eye, Thermometer, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'wouter';
 
 interface WeatherSidebarProps {
   isCollapsed: boolean;
@@ -20,7 +20,7 @@ const navItems = [
 ];
 
 export const WeatherSidebar = ({ isCollapsed, onToggle, onSectionClick }: WeatherSidebarProps) => {
-  const location = useLocation();
+  const [location] = useLocation();
 
   const handleSectionClick = (sectionId: string) => {
     onSectionClick(sectionId);
