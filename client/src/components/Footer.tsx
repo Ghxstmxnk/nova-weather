@@ -2,10 +2,10 @@ import { Linkedin } from 'lucide-react';
 
 export const Footer = () => {
   return (
-    <footer className="bg-glass-bg backdrop-blur-sm border-t border-glass-border py-6 mt-12">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col items-center justify-center space-y-4">
-          <div className="flex items-center gap-2 text-muted-foreground">
+    <footer className="bg-glass-bg backdrop-blur-sm border-t border-glass-border py-4 sm:py-6 mt-auto flex-shrink-0">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between space-y-2 sm:space-y-0">
+          <div className="flex items-center gap-2 text-muted-foreground text-sm">
             <span>Developed by</span>
             <a 
               href="https://www.linkedin.com/in/l-sneha-b66205295/"

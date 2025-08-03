@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { WeatherSidebar } from '@/components/WeatherSidebar';
 import { SearchBar } from '@/components/SearchBar';
 import { WeatherCard } from '@/components/WeatherCard';
@@ -9,13 +9,28 @@ import { WeatherDetails } from '@/components/WeatherDetails';
 import { Footer } from '@/components/Footer';
 import { useWeather, getWeatherBackgroundClass } from '@/hooks/useWeather';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
+import { InitialLoadingScreen } from '@/components/InitialLoadingScreen';
 import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export const Dashboard = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [showInitialLoading, setShowInitialLoading] = useState(true);
   const { weather, loading, error, fetchWeather, searchLocations } = useWeather();
+
+  useEffect(() => {
+    // Check if this is the first visit
+    const hasVisited = localStorage.getItem('atmoscope-visited');
+    if (hasVisited) {
+      setShowInitialLoading(false);
+    }
+  }, []);
+
+  const handleInitialLoadingComplete = () => {
+    localStorage.setItem('atmoscope-visited', 'true');
+    setShowInitialLoading(false);
+  };
 
   const handleLocationSelect = (location: string) => {
     fetchWeather(location);
@@ -51,6 +66,11 @@ export const Dashboard = () => {
     return 'https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg';
   };
 
+  // Show initial loading screen on first visit
+  if (showInitialLoading) {
+    return <InitialLoadingScreen onComplete={handleInitialLoadingComplete} />;
+  }
+
   if (error) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -63,7 +83,7 @@ export const Dashboard = () => {
   }
 
   return (
-    <div className="flex min-h-screen w-full bg-background relative overflow-hidden">
+    <div className="flex min-h-screen w-full bg-background relative overflow-x-hidden">
       {/* Dynamic Background */}
       <div 
         className="fixed inset-0 z-0"
@@ -87,25 +107,30 @@ export const Dashboard = () => {
       {/* Main Content */}
       <div 
         className={cn(
-          "flex-1 relative z-10 transition-all duration-300",
-          sidebarCollapsed ? "ml-16" : "ml-64"
+          "flex-1 relative z-10 transition-all duration-300 flex flex-col min-h-screen",
+          // Responsive sidebar margin
+          "transition-all duration-300",
+          sidebarCollapsed 
+            ? "sm:ml-16" 
+            : "sm:ml-64",
+          "ml-0" // No margin on mobile since sidebar is hidden
         )}
       >
         {/* Header */}
-        <header className="p-6 border-b border-glass-border bg-glass-bg backdrop-blur-sm">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+        <header className="p-4 sm:p-6 border-b border-glass-border bg-glass-bg backdrop-blur-sm flex-shrink-0">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center gap-4 min-w-0">
               <Button
                 variant="ghost"
                 size="sm"
-                className="lg:hidden text-foreground"
+                className="sm:hidden text-foreground"
                 onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
               >
                 <Menu className="w-5 h-5" />
               </Button>
-              <div>
-                <h1 className="text-2xl font-bold text-foreground">Atmoscope</h1>
-                <p className="text-muted-foreground">
+              <div className="min-w-0">
+                <h1 className="text-xl sm:text-2xl font-bold text-foreground truncate">Atmoscope</h1>
+                <p className="text-muted-foreground text-sm hidden sm:block">
                   {weather ? new Date(weather.location.localtime).toLocaleDateString('en-US', {
                     weekday: 'long',
                     year: 'numeric',
@@ -116,21 +141,23 @@ export const Dashboard = () => {
               </div>
             </div>
             
-            <SearchBar 
-              onLocationSelect={handleLocationSelect}
-              onSearch={searchLocations}
-            />
+            <div className="w-full sm:w-auto sm:min-w-[300px]">
+              <SearchBar 
+                onLocationSelect={handleLocationSelect}
+                onSearch={searchLocations}
+              />
+            </div>
           </div>
         </header>
 
         {/* Dashboard Content */}
-        <main className="p-6">
+        <main className="flex-1 p-4 sm:p-6 overflow-y-auto">
           {loading ? (
             <LoadingSpinner />
           ) : weather ? (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 max-w-7xl mx-auto">
               {/* Left Column - Main Weather */}
-              <div className="lg:col-span-2 space-y-6">
+              <div className="lg:col-span-2 space-y-4 sm:space-y-6">
                 <div id="current-weather">
                   <WeatherCard weather={weather} />
                 </div>
@@ -148,7 +175,7 @@ export const Dashboard = () => {
               </div>
 
               {/* Right Column - Location Cards */}
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 <div id="saved-locations">
                   <h3 className="text-lg font-semibold text-foreground mb-4">Saved Locations</h3>
                   <LocationCards 
@@ -161,7 +188,7 @@ export const Dashboard = () => {
           ) : null}
         </main>
         
-        {/* Footer */}
+        {/* Footer - Fixed at bottom */}
         <Footer />
       </div>
     </div>

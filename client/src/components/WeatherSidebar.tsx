@@ -30,7 +30,9 @@ export const WeatherSidebar = ({ isCollapsed, onToggle, onSectionClick }: Weathe
     <div
       className={cn(
         'fixed left-0 top-0 h-screen bg-glass-bg backdrop-blur-sm border-r border-glass-border transition-all duration-300 flex flex-col z-50',
-        isCollapsed ? 'w-16' : 'w-64'
+        isCollapsed ? 'w-16' : 'w-64',
+        // Hide on mobile, show on larger screens
+        'max-sm:hidden sm:block'
       )}
     >
       {/* Logo/Brand */}
@@ -74,20 +76,7 @@ export const WeatherSidebar = ({ isCollapsed, onToggle, onSectionClick }: Weathe
         </div>
       </nav>
 
-      {/* User Profile */}
-      <div className="p-4 border-t border-glass-border">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center">
-            <span className="text-sm font-semibold text-primary-foreground">JD</span>
-          </div>
-          {!isCollapsed && (
-            <div className="flex flex-col">
-              <span className="text-foreground font-medium text-sm">John Doe</span>
-              <span className="text-muted-foreground text-xs">Weather Enthusiast</span>
-            </div>
-          )}
-        </div>
-      </div>
+
 
       {/* Toggle Button */}
       <button
